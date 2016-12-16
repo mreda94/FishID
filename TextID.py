@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Fri Dec 16 00:07:11 2016
+
+@author: mreda_000
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Wed Dec 14 20:18:19 2016
 
 @author: mreda_000
@@ -9,7 +16,7 @@ Created on Wed Dec 14 20:18:19 2016
 
 import pylab as pl
 import numpy as np
-from skimage import io, filters, color
+from skimage import io, filters, color, exposure
 from pandas import read_csv
 from sklearn.cross_validation import train_test_split
 from sklearn.grid_search import GridSearchCV
@@ -18,25 +25,26 @@ from sklearn.decomposition import RandomizedPCA
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 #path to the folder that holds my files
-path = "C:/Users/mreda_000/Desktop"
-brandonPath = "/Users/brandondalton/Documents/USC - Programming"
+#path = "C:/Users/mreda_000/Desktop"
+path="."
 labelsInfo = read_csv("%s/trainLabels.csv" % path)
 #extracts images from file
 def images(name, path):
     x=[]
     for i in labelsInfo.ID:
-        x=x+["%s/%sResized/%s.Bmp" % (brandonPath, name, i)]
+        x=x+["%s/%sResized/%s.Bmp" % (path, name, i)]
         #print("%s/%sResized/%s.Bmp" % (path, name, i))
     x = io.ImageCollection(x)
     return x
 x=[]
 p=[]
 #preprossed images through edge extraction, make array 1 dimentional and list of labels 
-for i in range(len(images("train", brandonPath))):
+for i in range(len(images("train", path))):
     
-    n=color.rgb2gray(images("train", brandonPath)[i])
-    n=filters.sobel(n)
-    x= x+[np.ravel(n)]
+    n=color.rgb2gray(images("train", path)[i])
+    m=filters.sobel(n)
+    fd= exposure.equalize_hist(m)
+    x= x+[np.ravel(fd)]
     p=p+[ord(labelsInfo.Class[i]) ]
 
 
