@@ -26,7 +26,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 #path to the folder that holds my files
 #path = "C:/Users/mreda_000/Desktop"
-path="."
+path="C:/Users/mreda_000/Desktop"
 labelsInfo = read_csv("%s/trainLabels.csv" % path)
 #extracts images from file
 def images(name, path):
@@ -42,9 +42,9 @@ p=[]
 for i in range(len(images("train", path))):
     
     n=color.rgb2gray(images("train", path)[i])
-    m=filters.sobel(n)
-    fd= exposure.equalize_hist(m)
-    x= x+[np.ravel(fd)]
+    #n=(n-np.mean(n))/np.std(n)
+    m=exposure.equalize_hist(filters.sobel(n))
+    x= x+[np.ravel(m)]
     p=p+[ord(labelsInfo.Class[i]) ]
 
 
@@ -98,10 +98,10 @@ klf = klf.fit(X_train, y_train)
 #prediction based on SVM
 y_preds = clf.predict(X_test_pca)
 
-#prediction based on KNN
+# prediction based on KNN
 y_predk = klf.predict(X_test)
 
-#Get target names for y_test
+# Get target names for y_test
 target_name = []
 for i in range(len(target_names)):
    target_name= target_name+[chr(target_names[i])]
